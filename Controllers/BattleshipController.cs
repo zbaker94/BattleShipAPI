@@ -25,31 +25,36 @@ namespace BattleShipAPI.Controllers
 
         
         [HttpPost ("Game")]
-        public async Task<ActionResult<GameInstance>> CreateGame([FromBody]Player[] players)
+        public async Task<ActionResult<GameInstance>> CreateGame([FromBody]Guid[] playerIds)
         {
-            if(players.Length > 4)
+            if(playerIds.Length > 4)
             {
                 return BadRequest("Game may not have more than 4 players");
             }
 
             // create game instance
-            foreach (Player player in players)
+            var players = new Player[playerIds.Length];
+            int index = 0;
+            foreach (Guid playerId in playerIds)
             {   
-                if(player.Id == Guid.Empty)
+                if(playerId == Guid.Empty)
                 {
                     return BadRequest("all Player Ids must not be empty");
                 }
                 
-                if(!PlayerExists(player.Id))
+                if(!PlayerExists(playerId))
                 {
                     return BadRequest("all Players Must Already Exist");
                 }
 
-            }
-
-            if(players.Length == 0)
-            {
-                players = new Player[4];
+                var playerToAdd = await _context.Player.FindAsync(playerId);
+                if(playerToAdd == null)
+                {
+                    return NotFound("Player not found for id " + playerId);
+                }
+                playerToAdd.GameInstances = null;
+                players[index] = playerToAdd;
+                index++;
             }
 
             GameInstance gameInstance = new GameInstance(){

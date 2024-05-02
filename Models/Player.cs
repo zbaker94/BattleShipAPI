@@ -10,6 +10,6 @@ namespace BattleShipAPI.Models;
         public Guid Id { get; set; }
         public required string Name { get; set; }
 
-        public required GameInstance[] GameInstances { get; set; }
+        public GameInstance[]? GameInstances { get; set; }
 
     }
