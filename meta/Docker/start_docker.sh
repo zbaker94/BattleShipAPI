@@ -38,4 +38,8 @@ echo "Creating database..."
 sudo docker exec -it battleship_db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $PASSWORD  -Q 'CREATE DATABASE BattleshipDB'
 if [ $? -eq 0 ]; then
     echo "Database created."
+    sleep 3
+    echo "Applying migrations..."
+    # apply migrations
+    dotnet ef database update
 fi
