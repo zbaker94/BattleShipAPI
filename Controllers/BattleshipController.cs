@@ -21,8 +21,8 @@ namespace BattleShipAPI.Controllers
         }
 
         
-        [HttpPost ("CreateGame")]
-        public async Task<ActionResult<GameInstance>> CreateGame(Player[] players)
+        [HttpPost ("Game")]
+        public async Task<ActionResult<GameInstance>> CreateGame([FromBody]Player[] players)
         {
             if(players.Length > 4)
             {
@@ -42,6 +42,11 @@ namespace BattleShipAPI.Controllers
                     return BadRequest("all Players Must Already Exist");
                 }
 
+            }
+
+            if(players.Length == 0)
+            {
+                players = new Player[4];
             }
 
             GameInstance gameInstance = new GameInstance(){
@@ -134,6 +139,22 @@ namespace BattleShipAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(gameInstance);
+        }
+
+        // DELETE api/Game
+        [HttpDelete ("Game")]
+        public async Task<ActionResult<GameInstance>> DeleteGame([FromQuery]int id)
+        {
+            var gameInstance = await _context.GameInstances.FindAsync(id);
+            if (gameInstance == null)
+            {
+                return NotFound();
+            }
+
+            _context.GameInstances.Remove(gameInstance);
+            await _context.SaveChangesAsync();
+
+            return Ok(id);
         }
 
         private bool PlayerExists(Guid id)
