@@ -19,6 +19,11 @@ using BattleShipAPI.Models;
             optionsBuilder.UseSqlServer("Server=localhost;Database=BattleshipDB;User Id=SA;Password='m=3q>0Th%fJ7k;9%7ntf7@AQT';TrustServerCertificate=true;");
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+        }
+
         public DbSet<Player> Player { get; set; } = default!;
         public DbSet<Player> Players { get; set; } = default!;
         public DbSet<GameInstance> GameInstances { get; set; } = default!;

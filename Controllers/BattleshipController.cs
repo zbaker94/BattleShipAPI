@@ -50,7 +50,8 @@ namespace BattleShipAPI.Controllers
             }
 
             GameInstance gameInstance = new GameInstance(){
-                Players = players
+                Players = players,
+                Phase = GamePhase.NotStarted
             };
 
             _context.GameInstances.Add(gameInstance);

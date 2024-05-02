@@ -18,4 +18,6 @@ public class Board
     public int Columns { get; set; }
 
     public required Shot[] BoardState { get; set; }
+
+    public required Ship[] Ships { get; set; }
 }

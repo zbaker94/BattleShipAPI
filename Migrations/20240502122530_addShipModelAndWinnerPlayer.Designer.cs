@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BattleShipAPI.Migrations
 {
     [DbContext(typeof(BattleshipContext))]
-    partial class BattleshipContextModelSnapshot : ModelSnapshot
+    [Migration("20240502122530_addShipModelAndWinnerPlayer")]
+    partial class addShipModelAndWinnerPlayer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,6 +69,8 @@ namespace BattleShipAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("WinnerId");
+
                     b.ToTable("GameInstances");
                 });
 
@@ -75,11 +80,16 @@ namespace BattleShipAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("GameInstanceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GameInstanceId");
 
                     b.ToTable("Player");
                 });
@@ -163,21 +173,6 @@ namespace BattleShipAPI.Migrations
                     b.ToTable("Shot");
                 });
 
-            modelBuilder.Entity("GameInstancePlayer", b =>
-                {
-                    b.Property<int>("GameInstancesId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("PlayersId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GameInstancesId", "PlayersId");
-
-                    b.HasIndex("PlayersId");
-
-                    b.ToTable("GameInstancePlayer");
-                });
-
             modelBuilder.Entity("BattleShipAPI.Models.Board", b =>
                 {
                     b.HasOne("BattleShipAPI.Models.GameInstance", "GameInstance")
@@ -195,6 +190,22 @@ namespace BattleShipAPI.Migrations
                     b.Navigation("GameInstance");
 
                     b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("BattleShipAPI.Models.GameInstance", b =>
+                {
+                    b.HasOne("BattleShipAPI.Models.Player", "Winner")
+                        .WithMany("GameInstances")
+                        .HasForeignKey("WinnerId");
+
+                    b.Navigation("Winner");
+                });
+
+            modelBuilder.Entity("BattleShipAPI.Models.Player", b =>
+                {
+                    b.HasOne("BattleShipAPI.Models.GameInstance", null)
+                        .WithMany("Players")
+                        .HasForeignKey("GameInstanceId");
                 });
 
             modelBuilder.Entity("BattleShipAPI.Models.Ship", b =>
@@ -219,26 +230,21 @@ namespace BattleShipAPI.Migrations
                         .HasForeignKey("BoardId");
                 });
 
-            modelBuilder.Entity("GameInstancePlayer", b =>
-                {
-                    b.HasOne("BattleShipAPI.Models.GameInstance", null)
-                        .WithMany()
-                        .HasForeignKey("GameInstancesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BattleShipAPI.Models.Player", null)
-                        .WithMany()
-                        .HasForeignKey("PlayersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BattleShipAPI.Models.Board", b =>
                 {
                     b.Navigation("BoardState");
 
                     b.Navigation("Ships");
+                });
+
+            modelBuilder.Entity("BattleShipAPI.Models.GameInstance", b =>
+                {
+                    b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("BattleShipAPI.Models.Player", b =>
+                {
+                    b.Navigation("GameInstances");
                 });
 #pragma warning restore 612, 618
         }
