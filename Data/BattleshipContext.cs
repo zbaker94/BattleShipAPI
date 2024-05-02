@@ -28,4 +28,7 @@ using BattleShipAPI.Models;
         public DbSet<Player> Players { get; set; } = default!;
         public DbSet<GameInstance> GameInstances { get; set; } = default!;
         public DbSet<Board> Boards { get; set; } = default!;
+        public DbSet<Shot> Shots { get; set; } = default!;
+        public DbSet<Ship> Ships { get; set; } = default!;
+        public DbSet<ShipType> ShipTypes { get; set; } = default!;
     }

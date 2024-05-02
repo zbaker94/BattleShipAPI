@@ -1,7 +1,4 @@
-
-
-using BattleShipAPI.Service;
-
+// Purpose: Entry point for the Battleship API. This file is responsible for setting up the application and configuring the services and middleware that the application will use.
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

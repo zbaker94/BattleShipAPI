@@ -21,6 +21,8 @@ public class GameInstance
 
     public required Player[] Players { get; set; }
 
+    public Guid? ActivePlayerId { get; set; }
+
     public Guid? WinnerId { get; set; }
 
 }
